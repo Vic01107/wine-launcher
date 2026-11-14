@@ -42,10 +42,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            wine64 wine32 \
+            wine64 \
+            libwine \
             winetricks \
-            libgl1-mesa-glx \
-            libegl1-mesa \
+            libgl1 \
+            libegl1 \
             libxcb-xinerama0 \
             libxcb-icccm4 \
             libxcb-image0 \
