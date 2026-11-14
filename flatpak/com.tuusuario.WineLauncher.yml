@@ -1,0 +1,128 @@
+# Wine Launcher - Flatpak Manifest
+# Build: flatpak-builder --user --install --force-clean build-dir flatpak/com.tuusuario.WineLauncher.yml
+# Run: flatpak run com.tuusuario.WineLauncher
+
+app-id: com.tuusuario.WineLauncher
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: wine-launcher
+finish-args:
+  # X11 + Wayland
+  - --socket=x11
+  - --socket=wayland
+  # GPU / Vulkan for DXVK/VKD3D
+  - --device=dri
+  - --env=VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json:/usr/share/vulkan/icd.d/nvidia_icd.json
+  # File access for .exe files and bottles
+  - --filesystem=home
+  - --filesystem=xdg-run/wine-launcher:create
+  # Network (for Steam, online games, updates)
+  - --share=network
+  # D-Bus for notifications, etc.
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.secrets
+  # PulseAudio / PipeWire
+  - --socket=pulseaudio
+  # Steam compatibility tools (Proton)
+  - --filesystem=~/.steam/steam/compatibilitytools.d:ro
+  - --filesystem=~/.local/share/Steam/compatibilitytools.d:ro
+  # Lutris runners
+  - --filesystem=~/.local/share/lutris/runners/wine:ro
+  # System Wine (read-only)
+  - --filesystem=/usr/bin/wine:ro
+  - --filesystem=/usr/lib/wine:ro
+  - --filesystem=/usr/lib32/wine:ro
+  # Proton-GE common locations
+  - --filesystem=/opt/steam/compatibilitytools.d:ro
+  - --filesystem=/usr/share/steam/compatibilitytools.d:ro
+
+modules:
+  # Wine runtime (bundled for sandbox)
+  - name: wine
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/bin /app/lib /app/lib32 /app/share/wine
+      - cp -r /usr/bin/wine* /app/bin/ 2>/dev/null || true
+      - cp -r /usr/lib/wine /app/lib/ 2>/dev/null || true
+      - cp -r /usr/lib32/wine /app/lib32/ 2>/dev/null || true
+      - cp -r /usr/share/wine /app/share/ 2>/dev/null || true
+    sources:
+      - type: deb
+        url: https://dl.winehq.org/wine-builds/debian/dists/bookworm/main/binary-amd64/winehq-staging_9.0~bookworm-1_amd64.deb
+        sha256: SKIP
+        only-arches: [x86_64]
+      - type: deb
+        url: https://dl.winehq.org/wine-builds/debian/dists/bookworm/main/binary-i386/winehq-staging_9.0~bookworm-1_i386.deb
+        sha256: SKIP
+        only-arches: [x86_64]
+
+  # winetricks
+  - name: winetricks
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 winetricks /app/bin/winetricks
+    sources:
+      - type: file
+        url: https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+        sha256: SKIP
+
+  # Python + dependencies
+  - name: python3-deps
+    buildsystem: simple
+    build-commands:
+      - pip install --no-cache-dir --prefix=/app PySide6 psutil python-dotenv
+    sources:
+      - type: file
+        path: requirements.txt
+
+  # Wine Launcher application
+  - name: wine-launcher
+    buildsystem: simple
+    build-commands:
+      # Copy source
+      - cp -r main.py models/ services/ controllers/ views/ /app/
+      # Create launcher script
+      - |
+        cat > /app/bin/wine-launcher <<'EOF'
+        #!/bin/bash
+        export PYTHONPATH="/app:/app/lib/python3.11/site-packages:$PYTHONPATH"
+        export PATH="/app/bin:$PATH"
+        export WINE="/app/bin/wine"
+        export WINELOADER="/app/bin/wine"
+        export WINESERVER="/app/bin/wineserver"
+        export WINEPREFIX="${XDG_DATA_HOME:-$HOME/.local/share}/wine-launcher/bottles/default"
+        export WINEDLLOVERRIDES="mscoree,mshtml="
+        mkdir -p "$WINEPREFIX"
+        exec python3 /app/main.py "$@"
+        EOF
+      - chmod +x /app/bin/wine-launcher
+    sources:
+      - type: dir
+        path: .
+        dest: .
+
+  # Desktop entry & icon
+  - name: desktop-integration
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 wine-launcher.desktop /app/share/applications/com.tuusuario.WineLauncher.desktop
+      - install -Dm644 wine-launcher.png /app/share/icons/hicolor/256x256/apps/com.tuusuario.WineLauncher.png
+    sources:
+      - type: file
+        path: flatpak/wine-launcher.desktop
+      - type: file
+        path: assets/icon.png
+        dest: wine-launcher.png
+
+# Post-build cleanup
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - /share/doc
+  - '*.a'
+  - '*.la'
+  - __pycache__
+  - '*.pyc'
+  - '*.pyo'

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Wine Launcher
+Comment=Run Windows applications on Linux using Wine/Proton
+Exec=wine-launcher
+Icon=com.tuusuario.WineLauncher
+Terminal=false
+Type=Application
+Categories=Utility;System;Emulator;
+StartupNotify=true
+Keywords=wine;proton;windows;bottle;runner;games;
+MimeType=application/x-ms-dos-executable;application/x-msdownload;

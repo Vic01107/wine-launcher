@@ -1,0 +1,149 @@
+.\" wine-launcher.1 - Manual page for Wine Launcher
+.\" Generated automatically - DO NOT EDIT
+.\"
+.\" To install: sudo cp wine-launcher.1 /usr/share/man/man1/
+.\" To view: man wine-launcher
+.TH WINE-LAUNCHER 1 "2025-11-13" "Wine Launcher 0.1.0" "User Commands"
+
+.SH NAME
+wine-launcher \- Run Windows applications on Linux using Wine/Proton
+
+.SH SYNOPSIS
+.B wine-launcher
+[\fIoptions\fR]
+
+.SH DESCRIPTION
+.B wine-launcher
+is a graphical application for managing Wine prefixes (called "bottles") and running Windows executables (.exe) on Linux. It provides a modern Qt6 interface for:
+
+.IP •  4
+Creating and managing isolated Wine prefixes (bottles)
+.IP •  4
+Detecting and selecting Wine/Proton runners (System Wine, Steam Proton, Proton-GE, Wine-GE, Custom)
+.IP •  4
+Installing Windows dependencies via Winetricks (libraries, runtime, settings)
+.IP •  4
+Enabling graphics translation layers (DXVK, VKD3D, dgVoodoo2)
+.IP •  4
+Backing up and restoring bottles
+.IP •  4
+Managing per-bottle environment variables and launch options
+
+.SH OPTIONS
+.TP
+\fB--version\fR
+Display version information and exit.
+
+.TP
+\fB--help\fR
+Display help message and exit.
+
+.SH KEYBOARD SHORTCUTS
+.TP
+\fBCtrl+N\fR
+Create new bottle
+
+.TP
+\fBCtrl+R\fR
+Run installed application in selected bottle
+
+.TP
+\fBCtrl+E\fR
+Run custom executable in selected bottle
+
+.TP
+\fBCtrl+W\fR
+Open Winetricks dialog for selected bottle
+
+.TP
+\fBCtrl+B\fR
+Backup selected bottle
+
+.TP
+\fBCtrl+,\fR
+Open settings dialog
+
+.TP
+\fBDelete\fR
+Delete selected bottle
+
+.TP
+\fBF5\fR
+Refresh bottle list
+
+.SH FILES
+.TP
+\fI~/.config/wine-launcher/config.json\fR
+Global configuration (paths, defaults, UI preferences)
+
+.TP
+\fI~/.local/share/wine-launcher/bottles/\fR
+Wine prefixes (one directory per bottle)
+
+.TP
+\fI~/.local/share/wine-launcher/backups/\fR
+Compressed bottle backups (.tar.gz)
+
+.TP
+\fI~/.local/share/wine-launcher/runners/\fR
+Custom runner installations
+
+.TP
+\fI~/.local/share/applications/wine-launcher.desktop\fR
+Desktop entry for application menu
+
+.TP
+\fI~/.local/share/icons/hicolor/256x256/apps/wine-launcher.png\fR
+Application icon
+
+.SH ENVIRONMENT VARIABLES
+.TP
+\fBWINEDEBUG\fR
+Wine debug channels (e.g., \fBWINEDEBUG=+all\fR, \fBWINEDEBUG=err+all\fR)
+
+.TP
+\fBWINEPREFIX\fR
+Override Wine prefix path (set automatically per bottle)
+
+.TP
+\fBPATH\fR
+Must include \fI~/.local/bin\fR for command-line access
+
+.SH REQUIREMENTS
+.IP •  4
+Linux kernel 5.10+
+.IP •  4
+Wine 8.0+ or Proton (install via system package manager)
+.IP •  4
+winetricks (optional, for dependency management)
+.IP •  4
+Vulkan-capable GPU + drivers (for DXVK/VKD3D)
+.IP •  4
+32-bit libraries (for 32-bit Windows apps)
+
+.SH EXAMPLES
+.TP
+Start the GUI:
+.B wine-launcher
+
+.TP
+Run with Wine debug output:
+.B WINEDEBUG=+all wine-launcher 2>&1 | tee wine.log
+
+.TP
+Show version:
+.B wine-launcher --version
+
+.SH SEE ALSO
+.BR wine (1),
+.BR winetricks (1),
+.BR proton (1)
+
+.SH BUGS
+Report bugs at: https://github.com/Vic01107/wine-launcher/issues
+
+.SH AUTHOR
+Wine Launcher Contributors <https://github.com/Vic01107/wine-launcher>
+
+.SH LICENSE
+MIT License

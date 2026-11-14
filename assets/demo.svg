@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Wine Launcher - Animated Demo SVG for README -->
+<!-- Usage: <img src="assets/demo.svg" alt="Wine Launcher Demo" width="800"> -->
+<!-- Or convert to GIF: ffmpeg -i demo.svg -vf fps=10 demo.gif -->
+<svg width="900" height="600" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Color palette -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1e2e"/>
+      <stop offset="100%" style="stop-color:#282a36"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4A90D9"/>
+      <stop offset="100%" style="stop-color:#6272A4"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#50FA7B"/>
+      <stop offset="100%" style="stop-color:#43D08A"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFB86C"/>
+      <stop offset="100%" style="stop-color:#FF9F43"/>
+    </linearGradient>
+
+    <!-- Animations -->
+    <animate id="pulseGreen" attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+    <animate id="slideIn" attributeName="x" from="-100" to="0" dur="0.8s" fill="freeze"/>
+    <animate id="fadeIn" attributeName="opacity" from="0" to="1" dur="0.5s" fill="freeze"/>
+    <animate id="typing" attributeName="width" from="0" to="100%" dur="1.5s" fill="freeze"/>
+    <animate id="progressBar" attributeName="width" from="0%" to="100%" dur="2s" fill="freeze"/>
+    <animate id="spin" attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="600" fill="url(#bgGrad)"/>
+
+  <!-- Window frame -->
+  <g transform="translate(50, 40)">
+    <!-- Title bar -->
+    <rect x="0" y="0" width="800" height="36" rx="8" ry="8" fill="#1e1e2e" stroke="#44475a" stroke-width="1"/>
+    <circle cx="18" cy="18" r="6" fill="#FF5F56"/>
+    <circle cx="40" cy="18" r="6" fill="#FFBD2E"/>
+    <circle cx="62" cy="18" r="6" fill="#27C93F"/>
+    <text x="400" y="24" text-anchor="middle" font-family="monospace" font-size="12" fill="#6272A4">Wine Launcher</text>
+
+    <!-- Main content area -->
+    <rect x="0" y="36" width="800" height="524" fill="#282a36" stroke="#44475a" stroke-width="1"/>
+
+    <!-- LEFT PANEL - Bottle List -->
+    <g transform="translate(12, 48)">
+      <text x="0" y="0" font-family="monospace" font-size="11" fill="#6272A4" font-weight="bold">BOTELLAS</text>
+
+      <!-- Bottle 1 -->
+      <g transform="translate(0, 20)" opacity="0">
+        <animate href="#fadeIn" begin="0.5s"/>
+        <rect x="0" y="0" width="220" height="60" rx="6" fill="#333547" stroke="#4A90D9" stroke-width="1"/>
+        <circle cx="12" cy="30" r="8" fill="url(#greenGrad)">
+          <animate href="#pulseGreen"/>
+        </circle>
+        <text x="32" y="24" font-family="monospace" font-size="11" fill="#F8F8F2">● Cyberpunk 2077</text>
+        <text x="32" y="42" font-family="monospace" font-size="9" fill="#6272A4">Proton-GE 9.21 • win64</text>
+      </g>
+
+      <!-- Bottle 2 -->
+      <g transform="translate(0, 88)" opacity="0">
+        <animate href="#fadeIn" begin="0.7s"/>
+        <rect x="0" y="0" width="220" height="60" rx="6" fill="#333547" stroke="#44475a" stroke-width="1"/>
+        <circle cx="12" cy="30" r="8" fill="#6272A4"/>
+        <text x="32" y="24" font-family="monospace" font-size="11" fill="#F8F8F2">● Office 2021</text>
+        <text x="32" y="42" font-family="monospace" font-size="9" fill="#6272A4">System Wine 9.0 • win32</text>
+      </g>
+
+      <!-- Bottle 3 -->
+      <g transform="translate(0, 156)" opacity="0">
+        <animate href="#fadeIn" begin="0.9s"/>
+        <rect x="0" y="0" width="220" height="60" rx="6" fill="#333547" stroke="#44475a" stroke-width="1"/>
+        <circle cx="12" cy="30" r="8" fill="#6272A4"/>
+        <text x="32" y="24" font-family="monospace" font-size="11" fill="#F8F8F2">● Steam</text>
+        <text x="32" y="42" font-family="monospace" font-size="9" fill="#6272A4">Proton 9.0 • win64</text>
+      </g>
+
+      <!-- New Bottle Button -->
+      <g transform="translate(0, 240)" opacity="0">
+        <animate href="#fadeIn" begin="1.2s"/>
+        <rect x="0" y="0" width="220" height="36" rx="6" fill="url(#accentGrad)" opacity="0.2" stroke="url(#accentGrad)" stroke-width="1"/>
+        <text x="110" y="22" text-anchor="middle" font-family="monospace" font-size="11" fill="url(#accentGrad)" font-weight="bold">+ Nueva Botella</text>
+      </g>
+    </g>
+
+    <!-- RIGHT PANEL - Detail Tabs -->
+    <g transform="translate(260, 48)">
+      <!-- Tabs -->
+      <g opacity="0">
+        <animate href="#fadeIn" begin="0.6s"/>
+        <rect x="0" y="0" width="528" height="32" fill="#1e1e2e" stroke="#44475a" stroke-width="1"/>
+        <g transform="translate(8, 4)">
+          <text x="0" y="16" font-family="monospace" font-size="10" fill="#F8F8F2" font-weight="bold">General</text>
+          <text x="70" y="16" font-family="monospace" font-size="10" fill="#6272A4">Apps</text>
+          <text x="110" y="16" font-family="monospace" font-size="10" fill="#6272A4">Config</text>
+          <text x="165" y="16" font-family="monospace" font-size="10" fill="#6272A4">Winetricks</text>
+          <text x="245" y="16" font-family="monospace" font-size="10" fill="#6272A4">Entorno</text>
+          <!-- Active tab indicator -->
+          <rect x="0" y="20" width="55" height="2" fill="url(#accentGrad)"/>
+        </g>
+      </g>
+
+      <!-- General Tab Content -->
+      <g transform="translate(0, 40)" opacity="0">
+        <animate href="#fadeIn" begin="0.8s"/>
+        <rect x="0" y="0" width="528" height="480" fill="#282a36" stroke="#44475a" stroke-width="1" rx="4"/>
+
+        <!-- Info fields -->
+        <g transform="translate(16, 16)">
+          <text x="0" y="0" font-family="monospace" font-size="11" fill="#6272A4">Nombre:</text>
+          <text x="100" y="0" font-family="monospace" font-size="11" fill="#F8F8F2" font-weight="bold">Cyberpunk 2077</text>
+
+          <text x="0" y="24" font-family="monospace" font-size="11" fill="#6272A4">Estado:</text>
+          <text x="100" y="24" font-family="monospace" font-size="11" fill="url(#greenGrad)">● Detenido</text>
+
+          <text x="0" y="48" font-family="monospace" font-size="11" fill="#6272A4">Arquitectura:</text>
+          <text x="100" y="48" font-family="monospace" font-size="11" fill="#F8F8F2">win64</text>
+
+          <text x="0" y="72" font-family="monospace" font-size="11" fill="#6272A4">Runner:</text>
+          <text x="100" y="72" font-family="monospace" font-size="11" fill="url(#accentGrad)">Proton-GE 9.21</text>
+
+          <text x="0" y="96" font-family="monospace" font-size="11" fill="#6272A4">Prefijo:</text>
+          <text x="100" y="96" font-family="monospace" font-size="9" fill="#6272A4">~/.local/share/wine-launcher/bottles/Cyberpunk2077</text>
+
+          <text x="0" y="120" font-family="monospace" font-size="11" fill="#6272A4">Tamaño:</text>
+          <text x="100" y="120" font-family="monospace" font-size="11" fill="#F8F8F2">18.4 GB</text>
+        </g>
+
+        <!-- DXVK/VKD3D toggles -->
+        <g transform="translate(16, 160)">
+          <rect x="0" y="0" width="200" height="60" rx="4" fill="#333547" stroke="#44475a" stroke-width="1"/>
+          <text x="12" y="18" font-family="monospace" font-size="10" fill="#F8F8F2">[✓] DXVK habilitado</text>
+          <text x="12" y="38" font-family="monospace" font-size="10" fill="#F8F8F2">[✓] VKD3D habilitado</text>
+          <text x="12" y="52" font-family="monospace" font-size="10" fill="#6272A4">[ ] dgVoodoo2</text>
+        </g>
+      </g>
+
+      <!-- Apps Tab Content (animated switch) -->
+      <g transform="translate(0, 40)" opacity="0" id="appsTab">
+        <animate href="#fadeIn" begin="2.5s"/>
+        <rect x="0" y="0" width="528" height="480" fill="#282a36" stroke="#44475a" stroke-width="1" rx="4"/>
+        <g transform="translate(16, 16)">
+          <text x="0" y="0" font-family="monospace" font-size="11" fill="#F8F8F2" font-weight="bold">Apps instaladas:</text>
+          <text x="200" y="0" font-family="monospace" font-size="10" fill="url(#accentGrad)">[+ Agregar]  [▶ Ejecutar]  [🗑 Eliminar]</text>
+
+          <!-- App list -->
+          <g transform="translate(0, 24)">
+            <rect x="0" y="0" width="496" height="36" rx="4" fill="#333547" stroke="#4A90D9" stroke-width="1"/>
+            <text x="12" y="22" font-family="monospace" font-size="10" fill="#F8F8F2">Cyberpunk2077.exe</text>
+            <text x="200" y="22" font-family="monospace" font-size="9" fill="#6272A4">drive_c/Games/Cyberpunk 2077/bin/x64/</text>
+          </g>
+          <g transform="translate(0, 68)">
+            <rect x="0" y="0" width="496" height="36" rx="4" fill="#333547" stroke="#44475a" stroke-width="1"/>
+            <text x="12" y="22" font-family="monospace" font-size="10" fill="#F8F8F2">GOG Galaxy.exe</text>
+            <text x="200" y="22" font-family="monospace" font-size="9" fill="#6272A4">drive_c/GOG Galaxy/</text>
+          </g>
+          <g transform="translate(0, 112)">
+            <rect x="0" y="0" width="496" height="36" rx="4" fill="#333547" stroke="#44475a" stroke-width="1"/>
+            <text x="12" y="22" font-family="monospace" font-size="10" fill="#F8F8F2">REDlauncher.exe</text>
+            <text x="200" y="22" font-family="monospace" font-size="9" fill="#6272A4">drive_c/Program Files/REDlauncher/</text>
+          </g>
+        </g>
+      </g>
+
+      <!-- Winetricks Tab Content -->
+      <g transform="translate(0, 40)" opacity="0" id="winetricksTab">
+        <animate href="#fadeIn" begin="3.5s"/>
+        <rect x="0" y="0" width="528" height="480" fill="#282a36" stroke="#44475a" stroke-width="1" rx="4"/>
+        <g transform="translate(16, 16)">
+          <text x="0" y="0" font-family="monospace" font-size="11" fill="#F8F8F2">Categoría: </text>
+          <text x="80" y="0" font-family="monospace" font-size="11" fill="url(#accentGrad)">libraries ▼</text>
+
+          <text x="0" y="28" font-family="monospace" font-size="10" fill="#F8F8F2">☑ vcrun2019</text>
+          <text x="150" y="28" font-family="monospace" font-size="10" fill="#F8F8F2">☑ dxvk</text>
+          <text x="250" y="28" font-family="monospace" font-size="10" fill="#F8F8F2">☑ vkd3d</text>
+          <text x="350" y="28" font-family="monospace" font-size="10" fill="#F8F8F2">☑ d3dcompiler_47</text>
+
+          <text x="0" y="48" font-family="monospace" font-size="10" fill="#F8F8F2">☑ dotnet48</text>
+          <text x="150" y="48" font-family="monospace" font-size="10" fill="#F8F8F2">☑ corefonts</text>
+          <text x="250" y="48" font-family="monospace" font-size="10" fill="#F8F8F2">☑ tahoma</text>
+          <text x="350" y="48" font-family="monospace" font-size="10" fill="#F8F8F2">☐ gdiplus</text>
+
+          <text x="0" y="72" font-family="monospace" font-size="10" fill="#F8F8F2">☐ xact</text>
+          <text x="150" y="72" font-family="monospace" font-size="10" fill="#F8F8F2">☐ xaudio</text>
+          <text x="250" y="72" font-family="monospace" font-size="10" fill="#F8F8F2">☐ xinput</text>
+          <text x="350" y="72" font-family="monospace" font-size="10" fill="#F8F8F2">☐ msxml6</text>
+
+          <!-- Install button -->
+          <rect x="0" y="100" width="180" height="32" rx="4" fill="url(#greenGrad)" opacity="0.2" stroke="url(#greenGrad)" stroke-width="1"/>
+          <text x="90" y="122" text-anchor="middle" font-family="monospace" font-size="10" fill="url(#greenGrad)" font-weight="bold">Instalar Seleccionados</text>
+
+          <!-- Installed list -->
+          <text x="0" y="150" font-family="monospace" font-size="11" fill="#6272A4">Instalados en esta botella:</text>
+          <text x="0" y="170" font-family="monospace" font-size="10" fill="#50FA7B">• vcrun2019</text>
+          <text x="0" y="188" font-family="monospace" font-size="10" fill="#50FA7B">• dxvk</text>
+          <text x="0" y="206" font-family="monospace" font-size="10" fill="#50FA7B">• vkd3d</text>
+          <text x="0" y="224" font-family="monospace" font-size="10" fill="#50FA7B">• win10</text>
+          <text x="0" y="242" font-family="monospace" font-size="10" fill="#50FA7B">• virtualdesktop</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Terminal overlay (animated) -->
+    <g transform="translate(50, 350)" opacity="0" id="terminalOverlay">
+      <animate href="#fadeIn" begin="4.5s"/>
+      <animate href="#slideIn" begin="4.5s"/>
+      <rect x="0" y="0" width="700" height="200" rx="8" fill="#1e1e2e" stroke="#4A90D9" stroke-width="2" opacity="0.95"/>
+      <rect x="0" y="0" width="700" height="28" fill="#4A90D9" opacity="0.3" rx="8" ry="0"/>
+      <circle cx="14" cy="14" r="6" fill="#FF5F56"/>
+      <circle cx="32" cy="14" r="6" fill="#FFBD2E"/>
+      <circle cx="50" cy="14" r="6" fill="#27C93F"/>
+      <text x="80" y="19" font-family="monospace" font-size="11" fill="#6272A4">wine-launcher</text>
+
+      <g transform="translate(16, 40)" font-family="monospace" font-size="10" fill="#F8F8F2">
+        <text x="0" y="0"><tspan fill="#4A90D9">$</tspan> wine-launcher</text>
+        <text x="0" y="18"><tspan fill="#50FA7B">[INFO]</tspan> Iniciando Wine Launcher v0.1.0</text>
+        <text x="0" y="36"><tspan fill="#50FA7B">[INFO]</tspan> Detectando runners...</text>
+        <text x="0" y="54"><tspan fill="#FFB86C">[WARN]</tspan> winetricks no encontrado (opcional)</text>
+        <text x="0" y="72"><tspan fill="#50FA7B">[INFO]</tspan> Runner: Proton-GE 9.21 (~/.steam/steam/compatibilitytools.d/GE-Proton9-21)</text>
+        <text x="0" y="90"><tspan fill="#50FA7B">[INFO]</tspan> Runner: System Wine 9.0 (/usr/bin/wine)</text>
+        <text x="0" y="108"><tspan fill="#50FA7B">[INFO]</tspan> Cargando 3 botellas...</text>
+        <text x="0" y="126"><tspan fill="#50FA7B">[INFO]</tspan> UI lista - Esperando interacción</text>
+        <text x="0" y="144"><tspan fill="#4A90D9">$</tspan> <tspan id="cursor">_</tspan></text>
+        <animate xlink:href="#cursor" attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+      </g>
+    </g>
+
+    <!-- Status bar -->
+    <g transform="translate(0, 560)" opacity="0">
+      <animate href="#fadeIn" begin="1.5s"/>
+      <rect x="0" y="0" width="800" height="24" fill="#1e1e2e" stroke="#44475a" stroke-width="1"/>
+      <text x="12" y="16" font-family="monospace" font-size="10" fill="#6272A4">Listo - 3 botellas - Runner por defecto: Proton-GE 9.21</text>
+      <text x="788" y="16" text-anchor="end" font-family="monospace" font-size="10" fill="#6272A4">Ctrl+N Nueva  Ctrl+R Ejecutar  Ctrl+W Winetricks</text>
+    </g>
+  </g>
+
+  <!-- Watermark -->
+  <text x="890" y="590" text-anchor="end" font-family="monospace" font-size="8" fill="#44475a" opacity="0.5">Wine Launcher v0.1.0 • MVC + PySide6</text>
+</svg>

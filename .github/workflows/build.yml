@@ -1,0 +1,259 @@
+name: Build Wine Launcher
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    name: Build Linux (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+          - arch: aarch64
+            runner: ubuntu-latest-arm64
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            wine64 wine32 \
+            winetricks \
+            libgl1-mesa-glx \
+            libegl1-mesa \
+            libxcb-xinerama0 \
+            libxcb-icccm4 \
+            libxcb-image0 \
+            libxcb-keysyms1 \
+            libxcb-randr0 \
+            libxcb-render-util0 \
+            libxcb-shape0 \
+            libxcb-xfixes0 \
+            libxcb-xkb1 \
+            libxkbcommon-x11-0 \
+            libxkbcommon0 \
+            libfontconfig1 \
+            libfreetype6 \
+            libglib2.0-0 \
+            libharfbuzz0b \
+            libice6 \
+            libsm6 \
+            libx11-6 \
+            libx11-xcb1 \
+            libxcb1 \
+            libxext6 \
+            libxfixes3 \
+            libxi6 \
+            libxrender1 \
+            libxtst6 \
+            zlib1g \
+            patchelf
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build with PyInstaller
+        run: |
+          python -m PyInstaller --onefile --windowed --name wine-launcher main.py
+
+      - name: Verify binary
+        run: |
+          ls -la dist/
+          file dist/wine-launcher
+          ./dist/wine-launcher --help || true  # May not support --help with --windowed
+
+      - name: Rename binary for arch
+        run: |
+          mv dist/wine-launcher dist/wine-launcher-linux-${{ matrix.arch }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wine-launcher-linux-${{ matrix.arch }}
+          path: dist/wine-launcher-linux-${{ matrix.arch }}
+          retention-days: 30
+
+  create-release:
+    name: Create Release
+    needs: build-linux
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist/
+          merge-multiple: true
+
+      - name: List files
+        run: ls -la dist/
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          git log --oneline --decorate $(git describe --tags --abbrev=0 HEAD^)..HEAD | head -20 >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Wine Launcher ${{ github.ref_name }}
+          body: |
+            ## Wine Launcher ${{ github.ref_name }}
+
+            ### Cambios
+            ${{ steps.changelog.outputs.changelog }}
+
+            ### Descargas
+            - **Linux x86_64**: \`wine-launcher-linux-x86_64\`
+            - **Linux ARM64**: \`wine-launcher-linux-aarch64\`
+
+            ### Instalación rápida
+            \`\`\`bash
+            # x86_64
+            wget https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/wine-launcher-linux-x86_64
+            chmod +x wine-launcher-linux-x86_64
+            ./wine-launcher-linux-x86_64
+
+            # ARM64 (Raspberry Pi 4+, etc.)
+            wget https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/wine-launcher-linux-aarch64
+            chmod +x wine-launcher-linux-aarch64
+            ./wine-launcher-linux-aarch64
+            \`\`\`
+
+            ### Requisitos
+            - Wine 8+ instalado: \`sudo apt install wine64 wine32 winetricks\`
+            - Para juegos: Proton-GE recomendado (se auto-detecta)
+
+            ### Verificación SHA256
+            \`\`\`
+            ${{ steps.sha256.outputs.sha256sums }}
+            \`\`\`
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
+          files: |
+            dist/wine-launcher-linux-x86_64
+            dist/wine-launcher-linux-aarch64
+
+      - name: Generate SHA256
+        id: sha256
+        run: |
+          cd dist
+          sha256sum wine-launcher-linux-* > sha256sums.txt
+          cat sha256sums.txt
+          echo "sha256sums<<EOF" >> $GITHUB_OUTPUT
+          cat sha256sums.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Upload checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksums
+          path: dist/sha256sums.txt
+
+  # Optional: Build AppImage
+  build-appimage:
+    name: Build AppImage
+    runs-on: ubuntu-latest
+    needs: build-linux
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download x86_64 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: wine-launcher-linux-x86_64
+          path: dist/
+
+      - name: Install appimagetool
+        run: |
+          wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+
+      - name: Create AppDir
+        run: |
+          mkdir -p AppDir/usr/bin
+          cp dist/wine-launcher-linux-x86_64 AppDir/usr/bin/wine-launcher
+
+          # Desktop entry
+          cat > AppDir/wine-launcher.desktop <<'EOF'
+          [Desktop Entry]
+          Name=Wine Launcher
+          Comment=Run Windows applications on Linux
+          Exec=wine-launcher
+          Icon=wine-launcher
+          Terminal=false
+          Type=Application
+          Categories=Utility;System;Emulator;
+          EOF
+
+          # Icon
+          python3 <<'PYEOF'
+from PySide6.QtGui import QPixmap, QPainter, QColor, QFont
+from PySide6.QtCore import Qt, QRect
+p = QPixmap(256, 256); p.fill(Qt.transparent)
+painter = QPainter(p)
+painter.setRenderHint(QPainter.Antialiasing)
+grad = QLinearGradient(0, 0, 256, 256)
+grad.setColorAt(0, QColor("#4A90D9")); grad.setColorAt(1, QColor("#2E5C8A"))
+painter.setBrush(grad); painter.setPen(Qt.NoPen)
+painter.drawRoundedRect(16, 16, 224, 224, 40, 40)
+painter.setBrush(QColor(255,255,255,230))
+painter.drawEllipse(QRect(80, 90, 96, 80))
+painter.drawRect(122, 170, 12, 50)
+painter.drawEllipse(QRect(104, 214, 48, 12))
+painter.setFont(QFont("Arial", 48, QFont.Bold))
+painter.setPen(QColor(255,255,255,180))
+painter.drawText(QRect(16,16,224,224), Qt.AlignCenter, "WL")
+painter.end()
+p.save("AppDir/wine-launcher.png")
+PYEOF
+
+      - name: Build AppImage
+        run: |
+          ./appimagetool-x86_64.AppImage AppDir wine-launcher-linux-x86_64.AppImage
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: wine-launcher-AppImage
+          path: wine-launcher-linux-x86_64.AppImage
+
+      - name: Attach AppImage to release
+        uses: softprops/action-gh-release@v2
+        if: success()
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: wine-launcher-linux-x86_64.AppImage
