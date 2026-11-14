@@ -219,33 +219,9 @@ jobs:
           Categories=Utility;System;Emulator;
           EOF
 
-          # Icon - generate with Python
+          # Icon - generate with Python (single-line command)
           python3 -c "
-from PySide6.QtGui import QPixmap, QPainter, QColor, QFont, QLinearGradient
-from PySide6.QtCore import Qt, QRect
-import sys
-
-app = QApplication.instance() or QApplication(sys.argv)
-
-p = QPixmap(256, 256)
-p.fill(Qt.transparent)
-painter = QPainter(p)
-painter.setRenderHint(QPainter.Antialiasing)
-grad = QLinearGradient(0, 0, 256, 256)
-grad.setColorAt(0, QColor('#4A90D9'))
-grad.setColorAt(1, QColor('#2E5C8A'))
-painter.setBrush(grad)
-painter.setPen(Qt.NoPen)
-painter.drawRoundedRect(16, 16, 224, 224, 40, 40)
-painter.setBrush(QColor(255, 255, 255, 230))
-painter.drawEllipse(QRect(80, 90, 96, 80))
-painter.drawRect(122, 170, 12, 50)
-painter.drawEllipse(QRect(104, 214, 48, 12))
-painter.setFont(QFont('Arial', 48, QFont.Bold))
-painter.setPen(QColor(255, 255, 255, 180))
-painter.drawText(QRect(16, 16, 224, 224), Qt.AlignCenter, 'WL')
-painter.end()
-p.save('AppDir/wine-launcher.png')
+from PySide6.QtGui import QPixmap, QPainter, QColor, QFont, QLinearGradient; from PySide6.QtCore import Qt, QRect; from PySide6.QtWidgets import QApplication; import sys; app = QApplication.instance() or QApplication(sys.argv); p = QPixmap(256, 256); p.fill(Qt.transparent); painter = QPainter(p); painter.setRenderHint(QPainter.Antialiasing); grad = QLinearGradient(0, 0, 256, 256); grad.setColorAt(0, QColor('#4A90D9')); grad.setColorAt(1, QColor('#2E5C8A')); painter.setBrush(grad); painter.setPen(Qt.NoPen); painter.drawRoundedRect(16, 16, 224, 224, 40, 40); painter.setBrush(QColor(255, 255, 255, 230)); painter.drawEllipse(QRect(80, 90, 96, 80)); painter.drawRect(122, 170, 12, 50); painter.drawEllipse(QRect(104, 214, 48, 12)); painter.setFont(QFont('Arial', 48, QFont.Bold)); painter.setPen(QColor(255, 255, 255, 180)); painter.drawText(QRect(16, 16, 224, 224), Qt.AlignCenter, 'WL'); painter.end(); p.save('AppDir/wine-launcher.png')
 "
 
       - name: Build AppImage
