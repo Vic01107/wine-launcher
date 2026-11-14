@@ -256,4 +256,4 @@ PYEOF
         if: success()
         with:
           tag_name: ${{ github.ref_name }}
-          files: wine-launcher-linux-x86_64.AppImage
+          files: wine-launcher-linux-x86_64.AppImage# workflow_dispatch trigger
